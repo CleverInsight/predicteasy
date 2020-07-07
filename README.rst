@@ -1,25 +1,5 @@
-.. image:: https://cognito.readthedocs.io/en/latest/_images/logo.png
-    :target: http://cognito.readthedocs.org
-    :width: 200pt
-
 predicteasy : powerful autoML toolkit
 ==========================================
-
-
-+----------------------+------------------------+
-| Deployment           | |pypi| |conda|         |
-+----------------------+------------------------+
-| Build Status         | |travis|               |
-+----------------------+------------------------+
-| Metrics              | |coverall|             |
-+----------------------+------------------------+
-| GitHub               | |contributors| |stars| |
-+----------------------+------------------------+
-| License              | |BSD|                  |
-+----------------------+------------------------+
-| Community            | |gitter|               |
-+----------------------+------------------------+
-
 
 PredictEasy is an exclusive python autoML library and command line utility that helps any developer to transform raw data into a machine-learning format. 
   

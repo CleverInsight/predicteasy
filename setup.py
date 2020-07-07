@@ -27,7 +27,7 @@ REQUIRES = [
 
 
 CLASSIFIERS = [
-    'Development Status :: 1 - PLANNING',
+    'Development Status :: 1 - Planning',
     'Environment :: Console',
     'Intended Audience :: Developers',
     "Operating System :: OS Independent",
@@ -59,7 +59,7 @@ PROJECT_URLS = {
 setup(name='predicteasy',
       version='0.0.1',
       description=u"Auto ML simplified",
-      long_description=LONG_DESCRIPTION,
+      long_description="PredictEasy is an exclusive python autoML library and command line utility that helps any developer to transform raw data into a machine-learning format. ",
       classifiers=CLASSIFIERS,
       keywords=['AutoML', 'Automated Data Storyteller', 'Data Wrangler', 'Data Preprocessing',\
        'Machine Learning', 'Hot Encoder', 'Outlier Detection'],
