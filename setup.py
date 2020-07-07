@@ -27,7 +27,7 @@ REQUIRES = [
 
 
 CLASSIFIERS = [
-    'Development Status :: 4 - Beta',
+    'Development Status :: 1 - PLANNING',
     'Environment :: Console',
     'Intended Audience :: Developers',
     "Operating System :: OS Independent",
@@ -50,9 +50,9 @@ CLASSIFIERS = [
 
 DOWNLOAD_URL = ""
 PROJECT_URLS = {
-    "Bug Tracker": "https://github.com/CleverInsight/predicteasy-core",
+    "Bug Tracker": "https://github.com/CleverInsight/predicteasy",
     "Documentation": "https://predicteasy.readthedocs.io/en/latest/",
-    "Source Code": "https://github.com/CleverInsight/predicteasy-core",
+    "Source Code": "https://github.com/CleverInsight/predicteasy",
 }
 
 
@@ -66,7 +66,7 @@ setup(name='predicteasy',
       author=u"Bastin Robins .J",
       author_email='robin@cleverinsight.co',
       url='https://github.com/cleverinsight',
-      download_url='https://github.com/CleverInsight/predicteasy-core/releases',
+      download_url='https://github.com/CleverInsight/predicteasy/releases',
       project_urls=PROJECT_URLS,
       license='BSD',
       packages=[pkg for pkg in find_packages() if not pkg.startswith('test')],
