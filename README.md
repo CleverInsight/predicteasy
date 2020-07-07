@@ -1,2 +1,0 @@
-# predicteasy
-Powerful AutoML toolkit
