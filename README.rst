@@ -18,7 +18,6 @@ Install the extension by using pip.
     $ pip install predicteasy
 
 
-
 Contributors 
 ==============
 
