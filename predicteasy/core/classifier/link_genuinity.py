@@ -5,6 +5,8 @@ anomaly detection in given urls
 #import os
 import requests
 from bs4 import BeautifulSoup
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 class LinkGenuinityClassifier:
@@ -72,7 +74,7 @@ class LinkGenuinityClassifier:
 
     def get_title(self):
         """
-        Fetching the title of the url given.
+        Fetching the title of the url given. #18-07-2020
 
         Usage:
         ======
@@ -96,10 +98,33 @@ class LinkGenuinityClassifier:
         """
 
 
-    def check_relevence(self, title, content):
+    @classmethod
+    def check_relevence(cls, title, content):
         """
-        pass
+        Checking if the content and the title of the article are related to each other or not.
+        #21-07-2020
+
+        Usage:
+        ======
+
+            >>> clf = LinkGenuinityClassifier(url="https://www.ndtv.com/india-news/
+                      up-gangster-vikas-dubey-wanted-in-killing-of-8-cops-arrested
+                      -in-ujjain-madhya-pradesh-2259611")
+            >>> title = clf.get_title()
+            >>> content = clf.get_content()
+            >>> clf.check_relevance(title, content)
+
+        Output:
+        =======
+
+            >>> True
         """
+        documents = [title, content]
+        count_vectorizer = CountVectorizer(stop_words='english')
+        count_vectorizer = CountVectorizer()
+        sparse_matrix = count_vectorizer.fit_transform(documents)
+        value = cosine_similarity(sparse_matrix, sparse_matrix)[0, 1]
+        return bool(True) if value >= 0.5 else bool(False)
 
 
     def parse_actual_date(self):
