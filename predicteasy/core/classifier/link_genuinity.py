@@ -74,7 +74,7 @@ class LinkGenuinityClassifier:
 
     def get_title(self):
         """
-        Fetching the title of the url given. #18-07-2020
+        Fetching the title of the url given. #17-07-2020
 
         Usage:
         ======
@@ -102,7 +102,7 @@ class LinkGenuinityClassifier:
     def check_relevence(cls, title, content):
         """
         Checking if the content and the title of the article are related to each other or not.
-        #21-07-2020
+        #20-07-2020
 
         Usage:
         ======
@@ -135,8 +135,22 @@ class LinkGenuinityClassifier:
 
     def count_redirected_urls(self):
         """
-        pass
+        Returns the number of redirected urls present in the website.
+        #21-07-2020
+
+        Usage:
+        ======
+
+            >>> clf = LinkGenuinityClassifier(url="http://coreyms.com")
+            >>> clf.count_redirected_urls()
+
+        Output:
+        =======
+
+            >>> 131
         """
+        links = [link['href'] for link in self.soup.find_all('a')]
+        return len(links)
 
 
     def fetch_relevent_urls(self):
