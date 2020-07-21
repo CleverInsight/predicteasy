@@ -3,8 +3,8 @@ Anomaly Detection for Websites
 """
 #import os
 import requests
-import nltk
 from nltk import ngrams
+from bs4 import BeautifulSoup
 
 # pylint: disable=R0904
 class LinkGenuinityClassifier:
@@ -56,6 +56,7 @@ class LinkGenuinityClassifier:
         self.url = url
         self.res = requests.get(url, stream=True)
         self.html_string = requests.get(url).text
+        self.soup = BeautifulSoup(self.html_string, 'lxml')
 
 
     def get_ip_address(self):
@@ -84,8 +85,32 @@ class LinkGenuinityClassifier:
 
     def get_content(self):
         """
-        pass
+        get_content() is used for getting the content of the URL provided.
+
+        Usage:
+        ======
+
+            >>> clf = obj=LinkGenuinityClassifier(url="https://stackoverflow.com/questions/
+            22492484/how-do-i-get-the-ip-address-from-a-http-request-using-the-requests-library")
+            >>> print(clf.get_ip_address())
+
+
+        Output:
+        =======
+            >>> NEW DELHI: In a strong strategic signal to China amidst the military confrontation
+            in eastern Ladakh, a US carrier strike group led by aircraft carrier USS Nimitz
+            conducted a "cooperative" exercise with Indian warships in the Indian Ocean on Monday.
+            The message was further amplified by a hard-nosed display of military intent by India,
+            which has now deployed Jaguar maritime strike fighters in the Andaman and Nicobar
+            archipelago that dominates China’s critical sea trade routes passing through the
+            Malacca Strait.
+
         """
+        contents = " "
+        for content in self.soup.find_all('p'):
+            contents = contents + content.text
+        return contents
+
 
 
     def check_relevence(self, title, content):
@@ -168,7 +193,7 @@ class LinkGenuinityClassifier:
         Withthe tally of cases in Dharavi slum sprawl here has reached 2,492,the Brihanmumbai Municipal 
         Corporation (BMC) said. Dharavi now has 147 active cases.The BMC said 2,095 of 2,492 patients
         have already been discharged from hospitals.The number of COVID-19 cases in Pune district 
-        crossed the 50,000-mark on Monday after 473 more people tested positive for the disease. 
+        crossed the 50,000-mark on Monday after 473 get get get get more people tested positive for the disease. 
         The district’s current case count stands at 51,885 with 1,343 fatalities.  Out of these 
         over 37,000 are reported from Pune city . A lockdown has been imposed in Pune city, Pimpri
         -Chinchwad and parts of Pune rural from July 14 to July 23, in an effort to curb the
@@ -179,21 +204,18 @@ class LinkGenuinityClassifier:
         sample_text = sample_text.lower()
         file = open('C:/Users/HP/Desktop/Internship-CleverInsight/spam.txt', 'r')
         promise_words = [line.replace("\n", "").lower() for line in file.readlines()]
-        def extract_ngrams(data, num):
-            n_grams = ngrams(nltk.word_tokenize(data), num)
-            return [' '.join(grams) for grams in n_grams]
-        one_gram = extract_ngrams(sample_text, 1)
-        two_gram = extract_ngrams(sample_text, 2)
-        three_gram = extract_ngrams(sample_text, 3)
-        four_gram = extract_ngrams(sample_text, 4)
-        target_text = one_gram+two_gram+three_gram+four_gram
         count = 0
+        target_text = []
+        seperator = ' '
+        for i in range(4):
+            somegram = ngrams(sample_text.split(), i+1)
+            for j in somegram:
+                target_text.append(seperator.join(j))
         for i in target_text:
             if i in promise_words:
                 count = count+1
-        per = count/len(promise_words)
 
-        return bool(True) if per > 0.2 else bool(False)
+        return count/len(target_text)
 
 
     def calculate_misleading_score(self):
