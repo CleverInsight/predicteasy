@@ -2,9 +2,13 @@
 Anomaly Detection for Websites
 """
 #import os
+import pandas as pd
 import requests
-from nltk import ngrams
 from bs4 import BeautifulSoup
+from nltk import ngrams
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+
 
 # pylint: disable=R0904
 class LinkGenuinityClassifier:
@@ -241,12 +245,40 @@ class LinkGenuinityClassifier:
         pass
         """
 
-
-    def is_violence(self):
+    @staticmethod
+    def is_violence():
         """
-        pass
-        """
+        is_violence is used for checking if the article contains any violent text.
 
+        Usage:
+        ======
+
+            >>> clf = obj=LinkGenuinityClassifier(url="https://stackoverflow.com/questions/
+            22492484/how-do-i-get-the-ip-address-from-a-http-request-using-the-requests-library")
+            >>> print(clf.is_violence())
+
+
+        Output:
+        =======
+            >>> False
+        """
+        content_text = """Washington (CNN) - The billionaire NFL owner who serves as
+        President Donald Trump's ambassador to the United Kingdom was investigated by the 
+        State Department watchdog after allegations that he made racist and sexist comments to 
+        staff and sought to use his government position to benefit the President's personal business
+        in the UK, multiple sources told CNN."""
+        word_tokens = word_tokenize(content_text)
+        stop_words = set(stopwords.words('english'))
+        filtered_sentence = [w for w in word_tokens if not w in stop_words]
+        violent_words = pd.read_csv('C:/Users/HP/Desktop/Internship-CleverInsight/violentword.csv',
+                                    names=['words'])
+        count = 0
+        for i in filtered_sentence:
+            if violent_words.isin([i]).any().any():
+                count = count + 1
+            else:
+                continue
+        return bool(True) if count > 0 else bool(False)
 
     def is_adult_content(self):
         """
@@ -259,11 +291,39 @@ class LinkGenuinityClassifier:
         pass
         """
 
+    @staticmethod
+    def score_violence():
+        """
+        score_violence is used for calculating hte amount of violent text the article contains.
+        Usage:
+        ======
 
-    def score_violence(self):
+            >>> clf = obj=LinkGenuinityClassifier(url="https://stackoverflow.com/questions/
+            22492484/how-do-i-get-the-ip-address-from-a-http-request-using-the-requests-library")
+            >>> print(clf.score_violence())
+
+
+        Output:
+        =======
+            >>> 0.5
         """
-        pass
-        """
+        content_text = """Washington (CNN) - The billionaire NFL owner who serves
+        as President Donald Trump's ambassador to the United Kingdom was investigated by the 
+        State Department watchdog after allegations that he made racist and sexist comments to 
+        staff and sought to use his government position to benefit the President's personal business 
+        in the UK, multiple sources acid"""
+        word_tokens = word_tokenize(content_text)
+        stop_words = set(stopwords.words('english'))
+        filtered_sentence = [w for w in word_tokens if not w in stop_words]
+        violent_words = pd.read_csv('C:/Users/HP/Desktop/Internship-CleverInsight/violentword.csv',
+                                    names=['words'])
+        count = 0
+        for i in filtered_sentence:
+            if violent_words.isin([i]).any().any():
+                count = count + 1
+            else:
+                continue
+        return count/len(filtered_sentence)
 
     def score_adult_content(self):
         """
