@@ -3,6 +3,7 @@
 anomaly detection in given urls
 """
 #import os
+import urllib
 import requests
 from bs4 import BeautifulSoup
 from sklearn.feature_extraction.text import CountVectorizer
@@ -72,6 +73,30 @@ class LinkGenuinityClassifier:
         """
 
 
+    def get_domain_name(self, remove_http=True):
+        """
+        Fetching the domain name of the url given.
+        #22-07-2020
+
+        Usage:
+        ======
+
+            >>> clf = LinkGenuinityClassifier(url= 'http://bit.ly/bcFOko')
+            >>> clf.get_domain_name()
+
+        Output:
+        =======
+
+            >>> bit.ly
+        """
+        uri = urllib.parse.urlparse(self.url)
+        if remove_http:
+            domain_name = f"{uri.netloc}"
+        else:
+            domain_name = f"{uri.netloc}://{uri.netloc}"
+        return domain_name
+
+
     def get_title(self):
         """
         Fetching the title of the url given. #17-07-2020
@@ -98,8 +123,8 @@ class LinkGenuinityClassifier:
         """
 
 
-    @classmethod
-    def check_relevence(cls, title, content):
+    @staticmethod
+    def check_relevence(title, content):
         """
         Checking if the content and the title of the article are related to each other or not.
         #20-07-2020
@@ -133,24 +158,52 @@ class LinkGenuinityClassifier:
         """
 
 
-    def count_redirected_urls(self):
+    def redirected_urls(self):
         """
-        Returns the number of redirected urls present in the website.
+        Returns all the redirected urls present in the website.
         #21-07-2020
 
         Usage:
         ======
 
-            >>> clf = LinkGenuinityClassifier(url="http://coreyms.com")
+            >>> clf = LinkGenuinityClassifier(url = "http://coreyms.com")
             >>> clf.count_redirected_urls()
 
         Output:
         =======
 
-            >>> 131
+            >>> {'https://blog.codepen.io/radio/', 'http://carasantamaria.com/podcast/',
+                 'https://twitter.com/CoreyMSchafer', 'https://coreyms.com/tag/standard-library', }
         """
-        links = [link['href'] for link in self.soup.find_all('a')]
-        return len(links)
+        def is_valid(url):
+            parsed = urllib.parse.urlparse(url)
+            return bool(parsed.netloc) and bool(parsed.scheme)
+
+        links = set()
+        internal_urls = set()
+        external_urls = set()
+        urls = set()
+        domain_name = urllib.parse.urlparse(self.url).netloc
+        for a_tag in self.soup.find_all('a'):
+            href = a_tag.attrs.get('href')
+            if href == "" or href is None:
+                continue
+            href = urllib.parse.urljoin(self.url, href)
+            parsed_href = urllib.parse.urlparse(href)
+            href = parsed_href.scheme + "://" + parsed_href.netloc + parsed_href.path
+            if not is_valid(href):
+                continue
+            if href in internal_urls:
+                continue
+            if domain_name not in href:
+                if href not in external_urls:
+                    external_urls.add(href)
+                    links.add(href)
+                continue
+            urls.add(href)
+            links.add(href)
+            internal_urls.add(href)
+        return links
 
 
     def fetch_relevent_urls(self):
@@ -171,13 +224,40 @@ class LinkGenuinityClassifier:
         """
 
 
-    def count_standard_url_shortners(self):
+    def count_standard_url_shorteners(self):
         """
-        pass
+        Returns the number of standard url shorteners used.
+        #22-07-2020
+
+        Usage:
+        ======
+
+            >>> clf = LinkGenuinityClassifier(url = "http://bit.ly/bcFOko")
+            >>> clf.count_standard_url_shorteners()
+
+        Output:
+        =======
+
+            >>> 1
         """
+        shorteners = ["bit.ly", "goo.gl", "Owl.ly", "Deck.ly", "Su.pr"
+                      "lnk.co", "fur.ly", "moourl.com"]
+        count = 0
+        links = self.redirected_urls()
+        links.add(self.url)
+        for link in links:
+            resp = urllib.request.urlopen(link)
+            clf_1 = LinkGenuinityClassifier(url=link)
+            clf_2 = LinkGenuinityClassifier(url=resp.url)
+            given_url_domain = clf_1.get_domain_name(link)
+            original_url_domain = clf_2.get_domain_name(resp.url)
+            if given_url_domain != original_url_domain:
+                if given_url_domain in shorteners:
+                    count = count + 1
+        return count
 
 
-    def count_unconventional_url_shortners(self):
+    def count_unconventional_url_shorteners(self):
         """
         pass
         """
