@@ -1,4 +1,5 @@
 # pylint: disable=R0904
+# pylint: disable=E1111
 """
 anomaly detection in given urls
 """
@@ -124,9 +125,9 @@ class LinkGenuinityClassifier:
 
 
     @staticmethod
-    def check_relevence(title, content):
+    def check_relevance(content1, content2):
         """
-        Checking if the content and the title of the article are related to each other or not.
+        Checking if two given contents are related to each other or not.
         #20-07-2020
 
         Usage:
@@ -144,7 +145,7 @@ class LinkGenuinityClassifier:
 
             >>> True
         """
-        documents = [title, content]
+        documents = [content1, content2]
         count_vectorizer = CountVectorizer(stop_words='english')
         count_vectorizer = CountVectorizer()
         sparse_matrix = count_vectorizer.fit_transform(documents)
@@ -173,7 +174,7 @@ class LinkGenuinityClassifier:
         =======
 
             >>> {'https://blog.codepen.io/radio/', 'http://carasantamaria.com/podcast/',
-                 'https://twitter.com/CoreyMSchafer', 'https://coreyms.com/tag/standard-library', }
+                 'https://twitter.com/CoreyMSchafer', 'https://coreyms.com/tag/standard-library',}
         """
         def is_valid(url):
             parsed = urllib.parse.urlparse(url)
@@ -206,22 +207,51 @@ class LinkGenuinityClassifier:
         return links
 
 
-    def fetch_relevent_urls(self):
+    def fetch_relevant_urls(self):
         """
-        pass
+        Returns all the relevant urls from the set of redirected urls.
+        #23-07-2020
+
+        Usage:
+        ======
+
+            >>> clf = LinkGenuinityClassifier(url = "http://coreyms.com")
+            >>> clf.fetc_relevant_urls()
+
+        Output:
+        =======
+
+            >>> {'https://twitter.com/CoreyMSchafer', 'https://coreyms.com/tag/standard-library',}
         """
+        content = self.get_content()
+        relevant_links = set()
+        links = self.redirected_urls()
+        for link in links:
+            clf_1 = LinkGenuinityClassifier(link)
+            if self.check_relevance(content, clf_1.get_content()) == bool(True):
+                relevant_links.add(link)
+        return relevant_links
 
 
-    def fetch_irrelevent_urls(self):
+    def fetch_irrelevant_urls(self):
         """
-        pass
-        """
+        Returns all the irrelevant urls from the set of redirected urls.
+        #23-07-2020
 
+        Usage:
+        ======
 
-    def compare_content(self, content1, content2):
+            >>> clf = LinkGenuinityClassifier(url = "http://coreyms.com")
+            >>> clf.fetc_irrelevant_urls()
+
+        Output:
+        =======
+
+            >>> {'https://blog.codepen.io/radio/', 'http://carasantamaria.com/podcast/',}
         """
-        pass
-        """
+        links = self.redirected_urls()
+        relevant_links = self.fetch_relevant_urls()
+        return links - relevant_links
 
 
     def count_standard_url_shorteners(self):
@@ -249,8 +279,8 @@ class LinkGenuinityClassifier:
             resp = urllib.request.urlopen(link)
             clf_1 = LinkGenuinityClassifier(url=link)
             clf_2 = LinkGenuinityClassifier(url=resp.url)
-            given_url_domain = clf_1.get_domain_name(link)
-            original_url_domain = clf_2.get_domain_name(resp.url)
+            given_url_domain = clf_1.get_domain_name()
+            original_url_domain = clf_2.get_domain_name()
             if given_url_domain != original_url_domain:
                 if given_url_domain in shorteners:
                     count = count + 1
