@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from nltk import ngrams
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+from htmldate import find_date
 
 
 # pylint: disable=R0904
@@ -125,8 +126,23 @@ class LinkGenuinityClassifier:
 
     def parse_actual_date(self):
         """
-        self.html_string parse and fetch the date of publications
+        get_content() is used for getting the content of the URL provided.
+
+        Usage:
+        ======
+
+            >>> clf = obj=LinkGenuinityClassifier(url="https://stackoverflow.com/questions/
+            22492484/how-do-i-get-the-ip-address-from-a-http-request-using-the-requests-library")
+            >>> print(clf.parse_actual_date())
+
+
+        Output:
+        =======
+            >>> 2017-05-22
+
         """
+
+        return find_date(self.html_string)
 
 
     def count_redirected_urls(self):
