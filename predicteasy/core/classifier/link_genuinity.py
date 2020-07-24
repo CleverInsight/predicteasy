@@ -289,8 +289,35 @@ class LinkGenuinityClassifier:
 
     def count_unconventional_url_shorteners(self):
         """
-        pass
+        Returns the number of unconventional url shorteners used.
+        #23-07-2020
+
+        Usage:
+        ======
+
+            >>> clf = LinkGenuinityClassifier(url = "http://bit.ly/bcFOko")
+            >>> clf.count_unconventional_url_shorteners()
+
+        Output:
+        =======
+
+            >>> 0
         """
+        shorteners = ["bit.ly", "goo.gl", "Owl.ly", "Deck.ly", "Su.pr"
+                      "lnk.co", "fur.ly", "moourl.com"]
+        count = 0
+        links = self.redirected_urls()
+        links.add(self.url)
+        for link in links:
+            resp = urllib.request.urlopen(link)
+            clf_1 = LinkGenuinityClassifier(url=link)
+            clf_2 = LinkGenuinityClassifier(url=resp.url)
+            given_url_domain = clf_1.get_domain_name()
+            original_url_domain = clf_2.get_domain_name()
+            if given_url_domain != original_url_domain:
+                if given_url_domain not in shorteners:
+                    count = count + 1
+        return count
 
 
     def calculate_age_of_content(self, title, content):
