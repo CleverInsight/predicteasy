@@ -1,7 +1,7 @@
 """
 Anomaly Detection for Websites
 """
-#import os
+import os
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
@@ -97,7 +97,7 @@ class LinkGenuinityClassifier:
 
             >>> clf = obj=LinkGenuinityClassifier(url="https://stackoverflow.com/questions/
             22492484/how-do-i-get-the-ip-address-from-a-http-request-using-the-requests-library")
-            >>> print(clf.get_ip_address())
+            >>> print(clf.get_content())
 
 
         Output:
@@ -110,12 +110,11 @@ class LinkGenuinityClassifier:
             archipelago that dominates China’s critical sea trade routes passing through the
             Malacca Strait.
 
-        """
         contents = " "
         for content in self.soup.find_all('p'):
             contents = contents + content.text
         return contents
-
+        """
 
 
     def check_relevence(self, title, content):
@@ -186,8 +185,7 @@ class LinkGenuinityClassifier:
         pass
         """
 
-    @classmethod
-    def calculate_promises(cls):
+    def calculate_promises(self):
         """
          calculate_promises is used for checking if the article contains any promise words.
 
@@ -201,29 +199,11 @@ class LinkGenuinityClassifier:
 
         Output:
         =======
-            >>> False
+            >>> 0.015452
         """
-        sample_text = """Maharashtra, Mumbai, Pune Coronavirus News Live Updates:
-        Maharashtra’s COVID-19 tally rose to 3,18,695 on Monday with the addition 
-        of 8,240 new cases, while the death toll crossed the 12,000-mark, the state
-        health department said. With 176 new deaths in a day, the state’s fatality 
-        count increased to 12,030, the department said. A total of 5,460 patients were 
-        discharged from hospitals, taking the number of recovered persons to 1,75,029, 
-        the department said in a statement. There are 1,31,334 active cases in the state at present.
-        Withthe tally of cases in Dharavi slum sprawl here has reached 2,492,the Brihanmumbai Municipal 
-        Corporation (BMC) said. Dharavi now has 147 active cases.The BMC said 2,095 of 2,492 patients
-        have already been discharged from hospitals.The number of COVID-19 cases in Pune district 
-        crossed the 50,000-mark on Monday after 473 get get get get more people tested positive for the disease. 
-        The district’s current case count stands at 51,885 with 1,343 fatalities.  Out of these 
-        over 37,000 are reported from Pune city . A lockdown has been imposed in Pune city, Pimpri
-        -Chinchwad and parts of Pune rural from July 14 to July 23, in an effort to curb the
-        spread of the infection.
-        Meanwhile, Maharashtra state textile minister Aslam Shaikh on Monday said he
-        has tested positive for coronavirus and is isolating himself. He informed that 
-        he is currently asymptomatic and has urged all his contacts to get themselves tested."""
-        sample_text = sample_text.lower()
-        file = open('C:/Users/HP/Desktop/Internship-CleverInsight/spam.txt', 'r')
-        promise_words = [line.replace("\n", "").lower() for line in file.readlines()]
+        sample_text = self.get_content().lower()
+        promise_words = pd.read_csv(os.path.join(os.path.dirname(__file__), 'Data', 'spam.csv'),
+                                    names=['words'])
         count = 0
         target_text = []
         seperator = ' '
@@ -232,7 +212,7 @@ class LinkGenuinityClassifier:
             for j in somegram:
                 target_text.append(seperator.join(j))
         for i in target_text:
-            if i in promise_words:
+            if promise_words['words'].str.contains(i).any():
                 count = count+1
 
         return count/len(target_text)
@@ -261,8 +241,7 @@ class LinkGenuinityClassifier:
         pass
         """
 
-    @staticmethod
-    def is_violence():
+    def is_violence(self):
         """
         is_violence is used for checking if the article contains any violent text.
 
@@ -278,23 +257,8 @@ class LinkGenuinityClassifier:
         =======
             >>> False
         """
-        content_text = """Washington (CNN) - The billionaire NFL owner who serves as
-        President Donald Trump's ambassador to the United Kingdom was investigated by the 
-        State Department watchdog after allegations that he made racist and sexist comments to 
-        staff and sought to use his government position to benefit the President's personal business
-        in the UK, multiple sources told CNN."""
-        word_tokens = word_tokenize(content_text)
-        stop_words = set(stopwords.words('english'))
-        filtered_sentence = [w for w in word_tokens if not w in stop_words]
-        violent_words = pd.read_csv('C:/Users/HP/Desktop/Internship-CleverInsight/violentword.csv',
-                                    names=['words'])
-        count = 0
-        for i in filtered_sentence:
-            if violent_words.isin([i]).any().any():
-                count = count + 1
-            else:
-                continue
-        return bool(True) if count > 0 else bool(False)
+        score = self.score_violence()
+        return bool(True) if score >= 0.1 else bool(False)
 
     def is_adult_content(self):
         """
@@ -307,8 +271,7 @@ class LinkGenuinityClassifier:
         pass
         """
 
-    @staticmethod
-    def score_violence():
+    def score_violence(self):
         """
         score_violence is used for calculating hte amount of violent text the article contains.
         Usage:
@@ -323,22 +286,16 @@ class LinkGenuinityClassifier:
         =======
             >>> 0.5
         """
-        content_text = """Washington (CNN) - The billionaire NFL owner who serves
-        as President Donald Trump's ambassador to the United Kingdom was investigated by the 
-        State Department watchdog after allegations that he made racist and sexist comments to 
-        staff and sought to use his government position to benefit the President's personal business 
-        in the UK, multiple sources acid"""
+        content_text = self.get_content().lower()
         word_tokens = word_tokenize(content_text)
         stop_words = set(stopwords.words('english'))
         filtered_sentence = [w for w in word_tokens if not w in stop_words]
-        violent_words = pd.read_csv('C:/Users/HP/Desktop/Internship-CleverInsight/violentword.csv',
-                                    names=['words'])
+        violent_words = pd.read_csv(os.path.join(os.path.dirname(__file__), 'Data',
+                                                 'violentword.csv'), names=['words'])
         count = 0
         for i in filtered_sentence:
-            if violent_words.isin([i]).any().any():
+            if violent_words['words'].str.contains(i).any():
                 count = count + 1
-            else:
-                continue
         return count/len(filtered_sentence)
 
     def score_adult_content(self):
