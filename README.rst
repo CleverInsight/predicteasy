@@ -23,10 +23,6 @@ Contributors
 
 .. image:: https://avatars3.githubusercontent.com/u/3523655?s=60&v=4
    :target: https://github.com/BastinRobin
-.. image:: https://avatars2.githubusercontent.com/u/59742431?s=60&v=4
-   :target: https://github.com/nibir-paul
-.. image:: https://avatars0.githubusercontent.com/u/32188887?s=60&v=4
-   :target: https://github.com/tanvirath
 .. image:: https://avatars1.githubusercontent.com/u/29769264?s=60&v=4
    :target: https://github.com/vandana-11
 
@@ -40,10 +36,3 @@ Development Leads
 --------------------
 
 * `Vandana Bhagat <https://github.com/vandana-11>`__ <vandana.bhagat@christuniversity.in>
-
-
-Data Science Team
------------------
-
-* `Nibir Paul <https://github.com/nibir-paul>`__ <nibirpaul491@gmail.com>
-* `Tanvi Rath <https://github.com/tanvirath>`__ <rath.t98@gmail.com>
