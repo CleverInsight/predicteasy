@@ -1,10 +1,50 @@
-.. predicteasy documentation master file, created by
-   sphinx-quickstart on Tue Jul  7 14:12:14 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+predicteasy : powerful autoML toolkit
+==========================================
 
-Welcome to predicteasy's documentation!
-=======================================
+PredictEasy is an exclusive python autoML library and command line utility that helps any developer to transform raw data into a machine-learning format. 
+
+Installation
+------------
+
+**Prerequisite**
+
+- Python3.
+
+Install the extension by using pip.
+
+.. code:: bash
+
+    $ pip install predicteasy
+
+
+Contributors 
+==============
+
+.. image:: https://avatars3.githubusercontent.com/u/3523655?s=60&v=4
+   :target: https://github.com/BastinRobin
+.. image:: https://avatars1.githubusercontent.com/u/29769264?s=60&v=4
+   :target: https://github.com/vandana-11
+
+
+Core Lead
+----------
+* `Bastin Robins J <https://github.com/bastinrobin>`__ <robin@cleverinsight.co>
+
+Development Leads
+--------------------
+
+* `Vandana Bhagat <https://github.com/vandana-11>`__ <vandana.bhagat@christuniversity.in>
+
+
+
+Infrastructure support
+----------------------
+
+- We would like to thank `GitHub <https://www.github.com>`_ for providing
+  us with `Github Cloud <https://www.github.com/>`_ account
+  to automatically build the documentation.
+  <https://github.com/CleverInsight/predicteasy>`_.
+
 
 .. toctree::
    :maxdepth: 2
