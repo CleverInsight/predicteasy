@@ -1,3 +1,53 @@
+.. image:: ystatic/logo.png
+    :target: http://predicteasy.readthedocs.org
+    :width: 200pt
+
+
+.. |pypi| image:: https://img.shields.io/pypi/v/predicteasy.svg?logo=python&logoColor=white
+   :target: https://pypi.org/project/predicteasy/
+
+.. |conda| image:: https://img.shields.io/conda/vn/bastinrobin/predicteasy.svg?logo=conda-forge&logoColor=white
+   :target: https://anaconda.org/bastinrobin/predicteasy
+
+.. |travis| image:: https://travis-ci.org/CleverInsight/predicteasy.svg
+   :target: https://travis-ci.org/CleverInsight/predicteasy
+
+.. |coverall| image:: https://coveralls.io/repos/CleverInsight/predicteasy/badge.png
+   :target: https://coveralls.io/r/CleverInsight/predicteasy
+
+.. |contributors| image:: https://img.shields.io/github/contributors/Cleverinsight/predicteasy.svg?logo=github&logoColor=white
+   :target: https://github.com/Cleverinsight/predicteasy/graphs/contributors/
+
+.. |stars| image:: https://img.shields.io/github/stars/Cleverinsight/predicteasy.svg?style=social&label=Stars
+   :target: https://github.com/Cleverinsight/predicteasy
+   :alt: GitHub
+
+.. |BSD| image:: https://img.shields.io/badge/License-BSD-yellow.svg
+   :target: https://github.com/CleverInsight/predicteasy/blob/master/LICENSE
+
+.. |IEEE| image:: https://img.shields.io/badge/License-BSD-yellow.svg
+   :target: https://ieeexplore.ieee.org/document/9033938
+
+
+.. |gitter| image:: https://img.shields.io/gitter/room/predicteasy-dev/community?color=darkviolet
+   :target: https://gitter.im/predicteasy-dev/community
+
+
++----------------------+------------------------+
+| Deployment           | |pypi| |conda|         |
++----------------------+------------------------+
+| Build Status         | |travis|               |
++----------------------+------------------------+
+| Metrics              | |coverall|             |
++----------------------+------------------------+
+| GitHub               | |contributors| |stars| |
++----------------------+------------------------+
+| License              | |BSD|                  |
++----------------------+------------------------+
+| Community            | |gitter|               |
++----------------------+------------------------+
+
+
 predicteasy : powerful autoML toolkit
 ==========================================
 
@@ -16,6 +66,34 @@ Install the extension by using pip.
 
     $ pip install predicteasy
 
+
+Quick start
+==============
+
+.. code:: Python
+
+   from predicteasy.core.data import TableFrame
+   from predicteasy.core.supervised import Classifier
+
+   df = TableFrame(pd.read_csv('data/train.csv'))
+   X = df[['Sex','PassengerId', 'Pclass', 'Ticket', 'Embarked', 'Age', 'SibSp', 'Parch', 'Fare']]
+   y = df['Survived']
+   clf = Classifier(X, y)
+   print(clf.scoring(multiple=True))
+
+
+
++----+------------+--------------------+--------------------+
+| ID |   Model    |       Score        |      Elapsed       |
++----+------------+--------------------+--------------------+
+| 1  | extra_tree | 1.0875861644744873 | 0.8181887043994667 |
++----+------------+--------------------+--------------------+
+| 2  | dtree      | 0.8875861644744873 | 0.8181887043994667 |
++----+------------+--------------------+--------------------+
+| 3  | rfc        | 0.875861644744873  | 0.8181887043994667 |
++----+------------+--------------------+--------------------+
+| 4  | xgb        | 0.870861644744873  | 0.8181887043994667 |
++----+------------+--------------------+--------------------+
 
 Contributors 
 ==============
