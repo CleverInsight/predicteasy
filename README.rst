@@ -70,16 +70,34 @@ Install the extension by using pip.
 Quick start
 ==============
 
-.. code:: Python
+
+Classifier
+==============
+
+.. code:: python
 
    from predicteasy.core.data import TableFrame
    from predicteasy.core.supervised import Classifier
 
    df = TableFrame(pd.read_csv('data/train.csv'))
-   X = df[['Sex','PassengerId', 'Pclass', 'Ticket', 'Embarked', 'Age', 'SibSp', 'Parch', 'Fare']]
    y = df['Survived']
+   X = df.drop('Survived', axis=1)
    clf = Classifier(X, y)
    print(clf.scoring(multiple=True))
+
+
+Regressor
+==============
+.. code:: python
+   from predicteasy.core.data import TableFrame
+   from predicteasy.core.supervised import Regressor
+
+   df = TableFrame(pd.read_csv('data/train.csv'))
+   y = df['Age']
+   X = df.drop('Age', axis=1)
+   clf = Regressor(X, y)
+   print(clf.scoring(multiple=True))
+
 
 
 
