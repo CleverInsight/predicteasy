@@ -5,7 +5,6 @@ Data wrangling module
 
 written by Bastin Robins and Dr.Vandana Bhagat
 """
-
 import json
 import time
 import joblib

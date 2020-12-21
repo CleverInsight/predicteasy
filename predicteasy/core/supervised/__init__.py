@@ -2,12 +2,20 @@ import time
 import pandas as pd 
 import numpy as np
 import sklearn
+from joblib import dump, load
 from catboost import CatBoostClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
 
 
 class Classifier:
-
+    """
+    A supervised learning classifier which can help us to 
+    evaluate given dataset.
+    """
     def __init__(self, X, y):
         self.X = X
         self.y = y
@@ -29,26 +37,69 @@ class Classifier:
             models = [
                 ('extra_tree', sklearn.ensemble.ExtraTreesClassifier())
             ]
-        for name, etree  in models:
+        
+        numeric_transformer = Pipeline(steps=[
+            ('imputer', SimpleImputer(strategy='median')),
+            ('scaler', StandardScaler())])
+        categorical_transformer = Pipeline(steps=[
+            ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
+            ('onehot', OneHotEncoder(categories='auto', sparse=False, handle_unknown='ignore'))])
+        
+        preprocessor = ColumnTransformer(
+            transformers=[
+                ('num', numeric_transformer, self.X.get_numerical()),
+                ('cat', categorical_transformer, self.X.get_categorical())   
+            ],
+            remainder='passthrough', verbose=True
+        )
+        # evaluate on multiple models
+        for name, model  in models:
             start_time = time.time()
-            self.features = self.X.columns
+            etree = Pipeline(steps=[('preprocessor', preprocessor),
+                      ('classifier', model)])
             etree.fit(self.X, self.y)
+            dump(etree, name+'.joblib')
             end_time = time.time()
-            elapsed_time = end_time - start_time 
-            self.scores = etree.feature_importances_
+            elapsed_time = (end_time - start_time) 
+
+            numerical_columns = self.X.get_numerical()
+            onehot_columns = etree.named_steps['preprocessor']\
+                .named_transformers_['cat'].named_steps['onehot']\
+                .get_feature_names(input_features=self.X.get_categorical())
+
+            #you can get the values transformed with your pipeline
+            X_values = preprocessor.fit_transform(self.X)
+
+            all_columns = list(numerical_columns) + list(onehot_columns)
+
+            df_from_array_pipeline = pd.DataFrame(X_values, columns=all_columns)
+
+            # feature_importance = pd.Series(
+            #     data=etree.named_steps['classifier'].feature_importances_, \
+            #     index = np.array(all_columns))
+
+            feature_importance = pd.DataFrame({
+                    'Feature': np.array(all_columns),
+                    'Score': etree.named_steps['classifier'].feature_importances_
+            }).sort_values(by=['Score'], ascending=False)
+
             self.time_taken[name] = elapsed_time
-            self.result[name] = pd.DataFrame(
-                        {'features': self.features, 
-                        'coefficient': self.scores,
-                        'score': self.scores*100
-                }).sort_values(by=['score'], ascending=False)
+            self.result[name] = feature_importance
             self.cross_score[name] = sklearn.model_selection.cross_val_score(
                 etree, self.X, self.y, cv=4).mean()
-            
+        
         if (rtype=='dataframe'):
-            return [{"elapsed": self.time_taken[name], "cross_val": self.cross_score[name], name: result} for name, result in self.result.items()]
+            return [{"elapsed": self.time_taken[name],
+            "name": name,
+            "cross_val": self.cross_score[name], 
+            'model': result} for name, result in self.result.items()]
         elif (rtype=='dict'):
-            return [{"elapsed": self.time_taken[name], "cross_val": self.cross_score[name], name: result.to_dict(orient='records')} for name, result in self.result]
+            return [{"elapsed": self.time_taken[name], 
+            "name": name,
+            "cross_val": self.cross_score[name], 
+            'model': result.to_dict(orient='records')} for name, result in self.result]
         if (rtype=='json'):
-            return [{"elapsed": self.time_taken[name], "cross_val": self.cross_score[name], name: result.to_json(orient='records')} for name, result in self.result.items()]
-
+            return [{"elapsed": self.time_taken[name], 
+            "name": name,
+            "cross_val": self.cross_score[name], 
+            'model': result.to_json(orient='records')} for name, result in self.result.items()]
