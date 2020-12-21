@@ -1,4 +1,4 @@
-.. image:: /docs/build/html/_images/logo.png
+.. image:: https://predicteasy.readthedocs.io/en/latest/_images/logo.png
     :target: http://predicteasy.readthedocs.org
     :width: 200pt
 
