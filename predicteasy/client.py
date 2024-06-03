@@ -9,21 +9,6 @@ from .endpoints.workflows import WorkflowsAPI
 
 load_dotenv() 
 
-# class PredictEasyClient:
-#     def __init__(self, api_key, account_services=account_services, timeseries_url=timeseries_url):
-#         self.api_key = api_key
-#         self.account_services = account_services
-#         self.timeseries_url = timeseries_url
-#         self.headers = {
-#             "Accept": "application/json",
-#             "Authorization": f"Bearer {self.api_key}"
-#         }
-#         self.datasource = DatasourceAPI(self.timeseries_url, self.headers)
-#         self.regression = RegressionAPI(self.timeseries_url, self.headers)
-#         self.classification = ClassificationAPI(self.timeseries_url, self.headers)
-#         self.clustering = ClusteringAPI(self.timeseries_url, self.headers)
-#         self.workflows = WorkflowsAPI(self.account_services, self.headers)
-
 class PredictEasyClient:
     def __init__(self, auth_key, auth_secret):
         self.auth_key = auth_key
