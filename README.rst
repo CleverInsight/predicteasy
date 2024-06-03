@@ -29,7 +29,7 @@ Here's a detailed tutorial on how to use each public method in the ``PredictEasy
         client = PredictEasyClient(auth_key="your_auth_key", auth_secret="your_auth_secret")
 
         # List all datasources
-        all_datasources = client.datasource.list_datasources()
+        all_datasources = client.datasource.listDatasource()
         print(all_datasources)
 
 2. ``getDatasource(datasource_id)``
