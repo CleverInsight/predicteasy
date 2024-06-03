@@ -5,8 +5,8 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from prettytable import PrettyTable
 from predicteasy.core import metrics
-from predicteasy.core.data import TableFrame
-from predicteasy.core.supervised import Classifier, Regressor
+from Zauthentication.core.data import TableFrame
+from Zauthentication.core.supervised import Classifier, Regressor
 
 
 def run_model_scoring():
