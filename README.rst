@@ -1,144 +1,104 @@
-.. image:: https://predicteasy.readthedocs.io/en/latest/_images/logo.png
-    :target: http://predicteasy.readthedocs.org
-    :width: 200pt
+PredictEasy Python SDK
+======================
 
-
-.. |pypi| image:: https://img.shields.io/pypi/v/predicteasy.svg?logo=python&logoColor=white
-   :target: https://pypi.org/project/predicteasy/
-
-.. |conda| image:: https://img.shields.io/conda/vn/bastinrobin/predicteasy.svg?logo=conda-forge&logoColor=white
-   :target: https://anaconda.org/bastinrobin/predicteasy
-
-.. |travis| image:: https://travis-ci.org/CleverInsight/predicteasy.svg
-   :target: https://travis-ci.org/CleverInsight/predicteasy
-
-.. |coverall| image:: https://coveralls.io/repos/CleverInsight/predicteasy/badge.png
-   :target: https://coveralls.io/r/CleverInsight/predicteasy
-
-.. |contributors| image:: https://img.shields.io/github/contributors/Cleverinsight/predicteasy.svg?logo=github&logoColor=white
-   :target: https://github.com/Cleverinsight/predicteasy/graphs/contributors/
-
-.. |stars| image:: https://img.shields.io/github/stars/Cleverinsight/predicteasy.svg?style=social&label=Stars
-   :target: https://github.com/Cleverinsight/predicteasy
-   :alt: GitHub
-
-.. |BSD| image:: https://img.shields.io/badge/License-BSD-yellow.svg
-   :target: https://github.com/CleverInsight/predicteasy/blob/master/LICENSE
-
-.. |IEEE| image:: https://img.shields.io/badge/License-BSD-yellow.svg
-   :target: https://ieeexplore.ieee.org/document/9033938
-
-
-.. |gitter| image:: https://img.shields.io/gitter/room/predicteasy-dev/community?color=darkviolet
-   :target: https://gitter.im/predicteasy-dev/community
-
-
-+----------------------+------------------------+
-| Deployment           | |pypi| |conda|         |
-+----------------------+------------------------+
-| Build Status         | |travis|               |
-+----------------------+------------------------+
-| Metrics              | |coverall|             |
-+----------------------+------------------------+
-| GitHub               | |contributors| |stars| |
-+----------------------+------------------------+
-| License              | |BSD|                  |
-+----------------------+------------------------+
-| Community            | |gitter|               |
-+----------------------+------------------------+
-
-
-predicteasy : powerful autoML toolkit
-==========================================
-
-PredictEasy is an exclusive python autoML library and command line utility that helps any developer to transform raw data into a machine-learning format. 
+This is the Python SDK for PredictEasy, a platform for predictive analytics. With this SDK, you can easily interact with PredictEasy's APIs to perform various tasks such as managing datasources, performing regression analysis, classification, and clustering.
 
 Installation
 ------------
 
-**Prerequisite**
+To install the PredictEasy Python SDK, you can use pip:
 
-- Python3.
+.. code-block:: bash
 
-Install the extension by using pip.
+    pip install predicteasy
 
-.. code:: bash
+Usage
+-----
 
-    $ pip install predicteasy
+Here's a detailed tutorial on how to use each public method in the ``PredictEasyClient`` class:
 
+1. ``list_datasources()``
 
-Quick start
-==============
+    This method retrieves a list of all datasources available in PredictEasy.
 
+    .. code-block:: python
 
-Classifier
-==============
+        from predicteasy import PredictEasyClient
 
-.. code:: python
+        # Initialize the client
+        client = PredictEasyClient(auth_key="your_auth_key", auth_secret="your_auth_secret")
 
-   from predicteasy.core.data import TableFrame
-   from predicteasy.core.supervised import Classifier
+        # List all datasources
+        datasources = client.datasource.list_datasources()
+        print(datasources)
 
-   df = TableFrame(pd.read_csv('data/train.csv'))
-   y = df['Survived']
-   X = df.drop('Survived', axis=1)
-   clf = Classifier(X, y)
-   print(clf.scoring(multiple=True))
+2. ``getDatasource(datasource_id)``
 
+    This method fetches a specific datasource by its ID.
 
-Regressor
-==============
-.. code:: python
-   from predicteasy.core.data import TableFrame
-   from predicteasy.core.supervised import Regressor
+    .. code-block:: python
 
-   df = TableFrame(pd.read_csv('data/train.csv'))
-   y = df['Age']
-   X = df.drop('Age', axis=1)
-   clf = Regressor(X, y)
-   print(clf.scoring(multiple=True))
+        # Fetch a specific datasource by ID
+        datasource_id = "your_datasource_id"
+        datasource = client.datasource.getDatasource(datasource_id)
+        print(datasource)
 
+3. ``createDatasource(title, description, horizontal, vertical, file_path)``
 
+    This method creates a new datasource.
 
+    .. code-block:: python
 
-+----+------------+--------------------+--------------------+
-| ID |   Model    |       Score        |      Elapsed       |
-+----+------------+--------------------+--------------------+
-| 1  | extra_tree | 1.0875861644744873 | 0.8181887043994667 |
-+----+------------+--------------------+--------------------+
-| 2  | dtree      | 0.8875861644744873 | 0.8181887043994667 |
-+----+------------+--------------------+--------------------+
-| 3  | rfc        | 0.875861644744873  | 0.8181887043994667 |
-+----+------------+--------------------+--------------------+
-| 4  | xgb        | 0.870861644744873  | 0.8181887043994667 |
-+----+------------+--------------------+--------------------+
+        # Define datasource parameters
+        title = "Sample Title"
+        description = "Sample Description"
+        horizontal = ['CRM']
+        vertical = "Telecom"
+        file_path = "path/to/your/dataset.csv"
 
-Contributors 
-==============
+        # Create a new datasource
+        new_datasource = client.datasource.createDatasource(title, description, horizontal, vertical, file_path)
+        print(new_datasource)
 
-.. image:: https://avatars3.githubusercontent.com/u/3523655?s=60&v=4
-   :target: https://github.com/BastinRobin
-.. image:: https://avatars1.githubusercontent.com/u/29769264?s=60&v=4
-   :target: https://github.com/vandana-11
+4. ``deleteDatasource(datasource_id)``
 
+    This method deletes a datasource by its ID.
 
-Core Lead
-----------
-* `Bastin Robins J <https://github.com/bastinrobin>`__ <robin@cleverinsight.co>
+    .. code-block:: python
 
-Development Leads
---------------------
+        # Delete a datasource by ID
+        datasource_id = "datasource_to_delete_id"
+        response = client.datasource.deleteDatasource(datasource_id)
+        print(response)
 
-* `Vandana Bhagat <https://github.com/vandana-11>`__ <vandana.bhagat@christuniversity.in>
+5. ``regression.regression(datasource_id, title, test_size, cross_val, x, y)``
 
+    This method performs regression analysis.
 
+    .. code-block:: python
 
-Infrastructure support
-----------------------
+        # Perform regression analysis
+        regression_result = client.regression.regression("datasource_id", "Sales", 0.2, 2, ["feature1", "feature2"], "target")
+        regression_result
 
-- We would like to thank `GitHub <https://www.github.com>`_ for providing
-  us with `Github Cloud <https://www.github.com/>`_ account
-  to automatically build the documentation.
-  <https://github.com/CleverInsight/predicteasy>`_.
+6. ``classification.classify(datasource_id, title, test_size, cross_val, x, y)``
 
+    This method performs classification.
 
+    .. code-block:: python
+
+        # Perform classification
+        classification_result = client.classification.classify("datasource_id", "Ad Click", 0.2, 2, ["feature1", "feature2"], "target")
+        classification_result
+
+7. ``clustering.cluster(datasource_id, title, exclude, n_clusters)``
+
+    This method performs clustering.
+
+    .. code-block:: python
+
+        # Perform clustering
+        clustering_result = client.clustering.cluster("datasource_id", "Title", ["feature_to_exclude"], 3)
+        clustering_result
+
+Replace ``"your_auth_key"`` and ``"your_auth_secret"`` with your actual credentials from your PredictEasy Developer Profile and ``"your_datasource_id"`` with your Datasource IDs.
