@@ -1,7 +1,7 @@
 PredictEasy Python SDK
 ======================
 
-This is the Python SDK for PredictEasy, a platform for predictive analytics. With this SDK, you can easily interact with PredictEasy's APIs to perform various tasks such as managing datasources, performing regression analysis, classification, and clustering.
+PredictEasy for Developers empowers developers to integrate machine learning (ML) functionalities within their applications with Predicteasy's cloud-based platform. This comprehensive suite of tools simplifies the process of analytics, building and deploying ML models, enabling developers to focus on core application logic without getting bogged down in complex ML infrastructure management.
 
 Installation
 ------------
@@ -17,7 +17,7 @@ Usage
 
 Here's a detailed tutorial on how to use each public method in the ``PredictEasyClient`` class:
 
-1. ``list_datasources()``
+1. ``listDatasources()``
 
     This method retrieves a list of all datasources available in PredictEasy.
 
@@ -29,8 +29,8 @@ Here's a detailed tutorial on how to use each public method in the ``PredictEasy
         client = PredictEasyClient(auth_key="your_auth_key", auth_secret="your_auth_secret")
 
         # List all datasources
-        datasources = client.datasource.list_datasources()
-        print(datasources)
+        all_datasources = client.datasource.list_datasources()
+        print(all_datasources)
 
 2. ``getDatasource(datasource_id)``
 
@@ -40,8 +40,11 @@ Here's a detailed tutorial on how to use each public method in the ``PredictEasy
 
         # Fetch a specific datasource by ID
         datasource_id = "your_datasource_id"
-        datasource = client.datasource.getDatasource(datasource_id)
-        print(datasource)
+        details = client.datasource.getDatasource(datasource_id)
+    
+        # Access specific details
+        print(details.describe())
+        print(details.sample())
 
 3. ``createDatasource(title, description, horizontal, vertical, file_path)``
 
