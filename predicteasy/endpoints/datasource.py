@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from ..schemas import DataSourceCreationModel
 from typing import List, Optional
 from datetime import datetime
 import json
@@ -15,35 +16,38 @@ class Datasource(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-class Datasources(BaseModel):
-    datasources: List[Datasource]
-    
-class DatasourcePayload(BaseModel):
-    title: str = Field(..., title="Title of the datasource")
-    description: str = Field(..., title="Description of the datasource")
-    horizontal: List[str] = Field(..., title="Horizontal category")
-    vertical: str = Field(..., title="Vertical category")
+class DataSourceDetails:
+    def __init__(self, data):
+        self.content = data['content']
+        self.datasource = data['datasource']
 
+    def describe(self):
+        return pd.DataFrame(self.content['description'])
+
+    def sample(self):
+        return pd.DataFrame(self.content['sample'])
+    
+    def details(self):
+        return self.datasource
 
 class DatasourceAPI:
     def __init__(self, timeseries_url, headers):
         self.base_url = f"{timeseries_url}/datasources/"
         self.headers = headers
     
-    def listDatasource(self) -> Datasources:
+    def listDatasource(self) -> List[Datasource]:
         response = requests.get(self.base_url, headers=self.headers)
-        return self.handle_response(response, model=Datasources)
-        
+        return self.handle_response(response)
     
-    def getDatasource(self, datasource_id: str) -> Datasource:
+    def getDatasource(self, datasource_id: str) -> DataSourceDetails:
         url = f"{self.base_url}{datasource_id}"
         response = requests.get(url, headers=self.headers)
-        return self.handle_response(response)
+        return DataSourceDetails(self.handle_response(response))
 
     def createDatasource(self, title: str, description: str, horizontal: List[str], vertical: str, file_path: str):
             url = f"{self.base_url}create/file"
 
-            data = DatasourcePayload(
+            data = DataSourceCreationModel(
                 title=title,
                 description=description,
                 horizontal=horizontal,
@@ -66,8 +70,9 @@ class DatasourceAPI:
 
                 response = requests.post(url, data=form_data, files=files, headers=self.headers)                
                 return self.handle_response(response)
-
-    def update(self, datasource_id: str, data) -> Datasource:
+            
+    # TODO: API to be implemented
+    def updateDatasource(self, datasource_id: str, data) -> Datasource:
         url = f"{self.base_url}/{datasource_id}"
         response = requests.put(url, json=data, headers=self.headers)
         return self.handle_response(response, model=Datasource)

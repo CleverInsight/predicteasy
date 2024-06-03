@@ -1,5 +1,4 @@
-# predicteasy/schemas.py
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List
 
 class ClassificationRequest(BaseModel):
@@ -24,9 +23,8 @@ class ClusteringRequest(BaseModel):
     exclude: List[str]
     n_clusters: int
 
-class CreateDatasourceRequest(BaseModel):
-    title: str
-    description: str
-    horizontal: List[str]
-    vertical: str
-    file_path: str
+class DataSourceCreationModel(BaseModel):
+    title: str = Field(..., title="Title of the datasource")
+    description: str = Field(..., title="Description of the datasource")
+    horizontal: List[str] = Field(..., title="Horizontal category")
+    vertical: str = Field(..., title="Vertical category")

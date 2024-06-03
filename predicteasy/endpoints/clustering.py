@@ -1,4 +1,3 @@
-# predicteasy/endpoints/clustering.py
 import requests
 from pydantic import ValidationError
 from ..schemas import ClusteringRequest

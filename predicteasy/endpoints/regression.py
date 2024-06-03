@@ -1,4 +1,3 @@
-# predicteasy/endpoints/regression.py
 import requests
 from pydantic import ValidationError
 from ..schemas import RegressionRequest
