@@ -4,8 +4,8 @@ from ..schemas import RegressionRequest
 from IPython.display import IFrame
 
 class RegressionAPI:
-    def __init__(self, timeseries_url, headers):
-        self.base_url = f"{timeseries_url}/models/regression/"
+    def __init__(self, worker_url, headers):
+        self.base_url = f"{worker_url}/models/regression/"
         self.headers = headers
 
     def regression(self, datasource_id: str, title: str, test_size: float, cross_val: int, x: list, y: str):

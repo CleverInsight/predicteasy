@@ -4,8 +4,8 @@ from ..schemas import ClusteringRequest
 from IPython.display import IFrame 
 
 class ClusteringAPI:
-    def __init__(self, timeseries_url, headers):
-        self.base_url = f"{timeseries_url}/models/clustering/"
+    def __init__(self, worker_url, headers):
+        self.base_url = f"{worker_url}/models/clustering/"
         self.headers = headers
 
     def cluster(self, datasource_id: str, title: str, exclude: list, n_clusters: int):

@@ -6,6 +6,7 @@ from typing import List, Optional
 from datetime import datetime
 import json
 
+# List Datasource Single Response
 class Datasource(BaseModel):
     _id: str 
     title: str
@@ -16,6 +17,7 @@ class Datasource(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+# Get Datasource Response
 class DataSourceDetails:
     def __init__(self, data):
         self.content = data['content']
@@ -31,22 +33,26 @@ class DataSourceDetails:
         return self.datasource
 
 class DatasourceAPI:
-    def __init__(self, timeseries_url, headers):
-        self.base_url = f"{timeseries_url}/datasources/"
+    def __init__(self, worker_url, headers):
+        self.base_url = f"{worker_url}/datasources/"
         self.headers = headers
     
+    # list all datasources
     def listDatasource(self) -> List[Datasource]:
         response = requests.get(self.base_url, headers=self.headers)
         return self.handle_response(response)
     
+    # get datasource by ID 
     def getDatasource(self, datasource_id: str) -> DataSourceDetails:
         url = f"{self.base_url}{datasource_id}"
         response = requests.get(url, headers=self.headers)
         return DataSourceDetails(self.handle_response(response))
 
+    # Creation of Datasource
     def createDatasource(self, title: str, description: str, horizontal: List[str], vertical: str, file_path: str):
             url = f"{self.base_url}create/file"
 
+        
             data = DataSourceCreationModel(
                 title=title,
                 description=description,
@@ -55,7 +61,7 @@ class DatasourceAPI:
             )
 
             data_dict = data.model_dump()
-
+            # add CSV File
             with open(file_path, 'rb') as file:
                 files = {
                     'file': (file_path, file, 'text/csv')
@@ -76,7 +82,8 @@ class DatasourceAPI:
         url = f"{self.base_url}/{datasource_id}"
         response = requests.put(url, json=data, headers=self.headers)
         return self.handle_response(response, model=Datasource)
-
+    
+    # Delete datasource by ID
     def deleteDatasource(self, datasource_id: str):
         url = f"{self.base_url}{datasource_id}"
         response = requests.delete(url, headers=self.headers)
