@@ -48,4 +48,3 @@ class RegressionAPI:
             return IFrame(iframe_url, width="100%", height=600)
         else:
             response.raise_for_status()
-
